@@ -1,0 +1,6 @@
+user_id,item_id,timestamp,recomm_id,duration,additional_data
+user-1,item-1,2025-07-06T10:56:17.233930Z,945609ad-7bb3-4ad6-882c-ae3fc8b5ea21,45,
+user-2,item-2,,,,
+user-1,item-10,2025-07-06T21:12:43Z,644c005f-aa99-4bce-aa55-a0c610e80df0,,"{""source"": ""newsletter""}"
+user-2,item-9,2025-07-06T21:09:13Z,,,"{""source"": ""newsletter""}"
+user-3,item-5,2025-07-06T21:14:45Z,2d2eb48f-cd65-421a-943b-0e015055fd8e,,"{""source"": ""homepage""}"

@@ -1,0 +1,1 @@
+https://github.com/recombee/keboola-writer/blob/main/LICENSE.txt

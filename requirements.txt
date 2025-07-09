@@ -1,0 +1,8 @@
+keboola.component
+keboola.utils
+keboola.http-client
+freezegun
+mock
+pydantic
+recombee-api-client
+pandas

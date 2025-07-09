@@ -1,0 +1,44 @@
+{
+  "type": "object",
+  "title": "Parameters",
+  "required": [
+    "database_id",
+    "#private_token"
+  ],
+  "properties": {
+    "region": {
+      "enum": [
+        "ap-se",
+        "ca-east",
+        "eu-west",
+        "us-west"
+      ],
+      "type": "string",
+      "title": "Region",
+      "default": "eu-west",
+      "description": "Region where your Recombee database is hosted.",
+      "propertyOrder": 3
+    },
+    "batch_size": {
+      "type": "integer",
+      "title": "Batch Size",
+      "default": 1000,
+      "maximum": 10000,
+      "minimum": 100,
+      "description": "Number of requests to send in one batch to Recombee.",
+      "propertyOrder": 4
+    },
+    "database_id": {
+      "type": "string",
+      "title": "Recombee Database ID",
+      "description": "The ID of your Recombee database (e.g., 'your-database-id').",
+      "propertyOrder": 1
+    },
+    "#private_token": {
+      "type": "string",
+      "title": "Recombee Private Token",
+      "description": "The private token used to authenticate requests to Recombee.",
+      "propertyOrder": 2
+    }
+  }
+}

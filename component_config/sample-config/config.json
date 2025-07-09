@@ -1,0 +1,7 @@
+{
+	"parameters":{
+		"database_id": "<your-db-id>",
+		"#private_token": "<db-private-token>",
+      	"region": "us-west"
+	}
+}

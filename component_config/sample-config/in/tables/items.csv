@@ -1,0 +1,4 @@
+item_id,title,price,available,available_until,tags
+item-001,Wireless Mouse,25.99,true,2025-07-20T10:11:49.039302,"[""electronics"", ""accessory"", ""mouse""]"
+item-002,Mechanical Keyboard,75.49,false,2025-08-04T10:11:49.039318,"[""electronics"", ""keyboard""]"
+item-003,USB-C Hub,34.9,true,2025-08-19T10:11:49.039321,"[""electronics"", ""usb"", ""hub""]"
