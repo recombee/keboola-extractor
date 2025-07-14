@@ -1,21 +1,18 @@
 import sys
 import logging
+
 from keboola.component.base import ComponentBase
 from keboola.component.exceptions import UserException
 
 from recombee_api_client.exceptions import ResponseException
 
-from handlers.catalog.items_catalog_handler import ItemsCatalogHandler
-from handlers.catalog.users_catalog_handler import UsersCatalogHandler
-from handlers.interactions.bookmarks_handler import BookmarksHandlerBase
-from handlers.interactions.cart_additions_handler import CartAdditionsHandlerBase
-from handlers.interactions.detail_views_handler import DetailViewsHandlerBase
-from handlers.interactions.purchases_handler import PurchasesHandlerBase
-from handlers.interactions.ratings_handler import RatingsHandlerBase
-from handlers.interactions.view_portions_handler import ViewPortionsHandlerBase
 from utils.config import Config
 from utils.input_table import InputTable
 from utils.recombee_client_wrapper import RecombeeClientWrapper
+
+from requesters.recommendations_requesters import RecommendItemsToUserRequester
+from requesters.recommendations_requesters import RecommendItemsToItemRequester
+from requesters.recommendations_requesters import RecommendItemSegmentsToUserRequester
 
 
 class Component(ComponentBase):
@@ -26,38 +23,51 @@ class Component(ComponentBase):
         try:
             config = Config()
             client = RecombeeClientWrapper(
-                db_id=config.db_id, token=config.token, region_str=config.region
+                db_id=config.db_id,
+                token=config.token,
+                region_str=config.region
             )
 
             input_tables = self.get_input_tables_definitions()
             if not input_tables:
                 raise UserException("No input tables found")
 
-            for table_def in input_tables:
-                table = InputTable(table_def.full_path)
+            # Select endpoint class
+            endpoint_map = {
+                "Recommend Items to User": RecommendItemsToUserRequester,
+                "Recommend Items to Item": RecommendItemsToItemRequester,
+                "Recommend Item Segments to User": RecommendItemSegmentsToUserRequester,
+            }
 
-                if table.is_items_catalog():
-                    handler = ItemsCatalogHandler(table, client, config.batch_size)
-                elif table.is_users_catalog():
-                    handler = UsersCatalogHandler(table, client, config.batch_size)
-                elif table.is_bookmarks():
-                    handler = BookmarksHandlerBase(table, client, config.batch_size)
-                elif table.is_cart_additions():
-                    handler = CartAdditionsHandlerBase(table, client, config.batch_size)
-                elif table.is_detail_views():
-                    handler = DetailViewsHandlerBase(table, client, config.batch_size)
-                elif table.is_purchases():
-                    handler = PurchasesHandlerBase(table, client, config.batch_size)
-                elif table.is_ratings():
-                    handler = RatingsHandlerBase(table, client, config.batch_size)
-                elif table.is_view_portions():
-                    handler = ViewPortionsHandlerBase(table, client, config.batch_size)
-                else:
-                    logging.warning(f"Skipping unrecognized table: {table.name}")
-                    continue
+            if config.endpoint not in endpoint_map:
+                raise UserException(f"Unknown endpoint: '{config.endpoint}'")
 
-                logging.info(f"Processing table: {table.name}")
-                handler.handle()
+            # Select input file
+            if config.endpoint in ["Recommend Items to User", "Recommend Item Segments to User"]:
+                input_name = "users.csv"
+            elif config.endpoint == "Recommend Items to Item":
+                input_name = "items.csv"
+            else:
+                raise UserException(f"No input logic for endpoint: '{config.endpoint}'")
+
+            # Load matching input table
+            table_def = next((t for t in input_tables if t.name == input_name), None)
+            if not table_def:
+                raise UserException(f"Missing required input file '{input_name}' for endpoint '{config.endpoint}'")
+
+            table = InputTable(table_def.full_path)
+            ids = list(table.df.iloc[:, 0])
+
+            # Run recommender
+            RequesterClass = endpoint_map[config.endpoint]
+            requester = RequesterClass(
+                client=client,
+                ids=ids,
+                scenario=config.scenario,
+                count=config.count,
+                batch_size=config.batch_size,
+            )
+            requester.send_all()
 
         except ValueError as e:
             logging.exception(e)

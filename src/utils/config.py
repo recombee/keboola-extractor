@@ -2,7 +2,13 @@ import json
 
 
 class Config:
-    REQUIRED_KEYS = ["database_id", "#private_token"]
+    REQUIRED_KEYS = [
+        "database_id",
+        "#private_token",
+        "scenario",
+        "endpoint",
+        "count"
+    ]
 
     def __init__(self, path: str = "/data/config.json"):
         self._load(path)
@@ -40,5 +46,17 @@ class Config:
         return self._params.get("region", "eu-west")
 
     @property
+    def scenario(self) -> str:
+        return self._params["scenario"]
+
+    @property
+    def endpoint(self) -> str:
+        return self._params["endpoint"]
+
+    @property
+    def count(self) -> int:
+        return int(self._params.get("count", 100))
+
+    @property
     def batch_size(self) -> int:
-        return int(self._params.get("batch_size", 1000))
+        return int(self._params.get("batch_size", 100))

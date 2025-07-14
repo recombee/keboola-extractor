@@ -3,9 +3,24 @@
   "title": "Parameters",
   "required": [
     "database_id",
-    "#private_token"
+    "#private_token",
+    "scenario",
+    "endpoint",
+    "count"
   ],
   "properties": {
+    "database_id": {
+      "type": "string",
+      "title": "Recombee Database ID",
+      "description": "The ID of your Recombee database (e.g., 'your-database-id').",
+      "propertyOrder": 1
+    },
+    "#private_token": {
+      "type": "string",
+      "title": "Recombee Private Token",
+      "description": "The private token used to authenticate requests to Recombee.",
+      "propertyOrder": 2
+    },
     "region": {
       "enum": [
         "ap-se",
@@ -19,26 +34,39 @@
       "description": "Region where your Recombee database is hosted.",
       "propertyOrder": 3
     },
+    "scenario": {
+      "type": "string",
+      "title": "Scenario",
+      "description": "The recommendation scenario to be used (e.g., 'homepage', 'related-items').",
+      "propertyOrder": 4
+    },
+    "endpoint": {
+      "type": "string",
+      "title": "Recommendation Endpoint",
+      "enum": [
+        "Recommend Items to User",
+        "Recommend Items to Item",
+        "Recommend Item Segments to User"
+      ],
+      "description": "Which Recombee endpoint to use when fetching recommendations.",
+      "propertyOrder": 5
+    },
+    "count": {
+      "type": "integer",
+      "title": "Number of Recommendations",
+      "description": "How many recommended items to fetch per user or item.",
+      "minimum": 1,
+      "maximum": 1000,
+      "propertyOrder": 6
+    },
     "batch_size": {
       "type": "integer",
       "title": "Batch Size",
-      "default": 1000,
+      "default": 100,
       "maximum": 10000,
-      "minimum": 100,
-      "description": "Number of requests to send in one batch to Recombee.",
-      "propertyOrder": 4
-    },
-    "database_id": {
-      "type": "string",
-      "title": "Recombee Database ID",
-      "description": "The ID of your Recombee database (e.g., 'your-database-id').",
-      "propertyOrder": 1
-    },
-    "#private_token": {
-      "type": "string",
-      "title": "Recombee Private Token",
-      "description": "The private token used to authenticate requests to Recombee.",
-      "propertyOrder": 2
+      "minimum": 10,
+      "description": "Number of users or items to fetch recommendations for in a single batch.",
+      "propertyOrder": 7
     }
   }
 }
