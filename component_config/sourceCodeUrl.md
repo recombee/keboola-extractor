@@ -1,1 +1,1 @@
-https://github.com/recombee/keboola-writer
+https://github.com/recombee/keboola-extractor

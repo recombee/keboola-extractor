@@ -6,6 +6,7 @@ from keboola.component.exceptions import UserException
 
 from recombee_api_client.exceptions import ResponseException
 
+from utils.output_table_writer import OutputTableWriter
 from utils.config import Config
 from utils.input_table import InputTable
 from utils.recombee_client_wrapper import RecombeeClientWrapper
@@ -23,9 +24,7 @@ class Component(ComponentBase):
         try:
             config = Config()
             client = RecombeeClientWrapper(
-                db_id=config.db_id,
-                token=config.token,
-                region_str=config.region
+                db_id=config.db_id, token=config.token, region_str=config.region
             )
 
             input_tables = self.get_input_tables_definitions()
@@ -42,21 +41,34 @@ class Component(ComponentBase):
             if config.endpoint not in endpoint_map:
                 raise UserException(f"Unknown endpoint: '{config.endpoint}'")
 
-            # Select input file
-            if config.endpoint in ["Recommend Items to User", "Recommend Item Segments to User"]:
+            if config.endpoint == "Recommend Items to User":
                 input_name = "users.csv"
+                result_id_column = "user_id"
+                result_recommended_ids_column = "recommended_items"
+            elif config.endpoint == "Recommend Item Segments to User":
+                input_name = "users.csv"
+                result_id_column = "user_id"
+                result_recommended_ids_column = "recommended_item_segments"
             elif config.endpoint == "Recommend Items to Item":
                 input_name = "items.csv"
+                result_id_column = "item_id"
+                result_recommended_ids_column = "recommended_items"
             else:
                 raise UserException(f"No input logic for endpoint: '{config.endpoint}'")
 
             # Load matching input table
             table_def = next((t for t in input_tables if t.name == input_name), None)
             if not table_def:
-                raise UserException(f"Missing required input file '{input_name}' for endpoint '{config.endpoint}'")
+                raise UserException(
+                    f"Missing required input file '{input_name}' for endpoint '{config.endpoint}'"
+                )
 
             table = InputTable(table_def.full_path)
             ids = list(table.df.iloc[:, 0])
+
+            writer = OutputTableWriter(
+                id_column=result_id_column, result_column=result_recommended_ids_column
+            )
 
             # Run recommender
             RequesterClass = endpoint_map[config.endpoint]
@@ -66,6 +78,7 @@ class Component(ComponentBase):
                 scenario=config.scenario,
                 count=config.count,
                 batch_size=config.batch_size,
+                writer=writer,
             )
             requester.send_all()
 

@@ -2,13 +2,7 @@ import json
 
 
 class Config:
-    REQUIRED_KEYS = [
-        "database_id",
-        "#private_token",
-        "scenario",
-        "endpoint",
-        "count"
-    ]
+    REQUIRED_KEYS = ["database_id", "#private_token", "scenario", "endpoint", "count"]
 
     def __init__(self, path: str = "/data/config.json"):
         self._load(path)

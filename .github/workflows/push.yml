@@ -3,7 +3,7 @@ on: [ push ]
 concurrency: ci-${{ github.ref }} # to avoid tag collisions in the ECR
 env:
   # repository variables:
-  KBC_DEVELOPERPORTAL_APP: "TODO"
+  KBC_DEVELOPERPORTAL_APP: "recombee.ex-recombee"
   KBC_DEVELOPERPORTAL_VENDOR: "recombee"
   DOCKERHUB_USER: ${{ secrets.DOCKERHUB_USER }}
   KBC_DEVELOPERPORTAL_USERNAME: ${{ vars.KBC_DEVELOPERPORTAL_USERNAME }}

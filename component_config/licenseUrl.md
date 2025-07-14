@@ -1,1 +1,1 @@
-https://github.com/recombee/keboola-writer/blob/main/LICENSE.txt
+https://github.com/recombee/keboola-extractor/blob/main/LICENSE.txt

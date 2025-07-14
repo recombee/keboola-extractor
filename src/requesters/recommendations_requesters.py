@@ -11,6 +11,8 @@ from recombee_api_client.api_requests import RecommendItemSegmentsToUser
 
 from utils.recombee_client_wrapper import RecombeeClientWrapper
 
+from utils.output_table_writer import OutputTableWriter
+
 
 @dataclass
 class ErrorExample:
@@ -34,26 +36,40 @@ class BaseRecommendationsRequester(ABC):
         client: RecombeeClientWrapper,
         ids: List[str],
         scenario: str,
-        count: int = 10,
-        batch_size: int = 100,
+        count: int,
+        batch_size: int,
+        writer: OutputTableWriter,
     ):
         self.client = client
         self.ids = ids
         self.scenario = scenario
         self.count = count
         self.batch_size = batch_size
+        self.writer = writer
 
-    def send_all(self) -> List[dict]:
+    def send_all(self):
         requests = [self.make_request(id_) for id_ in self.ids]
         results = []
 
         for i in range(0, len(requests), self.batch_size):
             batch_requests = requests[i : i + self.batch_size]
+            batch_ids = self.ids[i : i + self.batch_size]
+
             response = self.client.safe_send_requests(batch_requests)
             results.extend(response)
 
+            for id_, result in zip(batch_ids, response):
+                if result.get("code") == 200:
+                    data = result.get("json", {})
+                    self.writer.write_row(
+                        id_value=id_,
+                        recomm_id=data.get("recommId"),
+                        recommended=[rec["id"] for rec in data.get("recomms", [])],
+                        api_response=data,
+                    )
+
+        self.writer.finalize()
         self._summarize_results(results)
-        return results
 
     def _summarize_results(self, results: List[dict]):
         summary = BatchSummary(total=len(results))
