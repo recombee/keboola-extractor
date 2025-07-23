@@ -16,21 +16,27 @@ class OutputTableWriter:
         filename: str = "recommendations.csv",
     ):
         self.ci = CommonInterface()
+        self.filename = filename
         self.id_column = id_column
         self.result_column = result_column
         self.columns = [self.id_column, "recomm_id", self.result_column, "api_response"]
 
+        self.full_path = os.path.join(self.ci.tables_out_path, self.filename)
+        self.destination = os.path.splitext(self.filename)[0]  # Remove .csv
+
+        # Define table schema and manifest
         self.table = self.ci.create_out_table_definition(
-            filename,
+            self.filename,
             schema=self.columns,
-            destination=filename,
+            destination=self.destination,
             primary_key=[self.id_column],
             incremental=False,
         )
 
-        self.full_path = self.table.full_path
-        os.makedirs(os.path.dirname(self.full_path), exist_ok=True)
-        self.csv_file = open(self.full_path, mode="w", encoding="utf-8", newline="")
+        # Open CSV writer
+        self.csv_file = open(
+            self.table.full_path, mode="w", encoding="utf-8", newline=""
+        )
         self.writer = csv.DictWriter(self.csv_file, fieldnames=self.columns)
         self.writer.writeheader()
 

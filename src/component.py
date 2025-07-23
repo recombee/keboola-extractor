@@ -1,5 +1,4 @@
 import os
-import sys
 import logging
 
 from keboola.component.base import ComponentBase
