@@ -37,7 +37,7 @@
     "scenario": {
       "type": "string",
       "title": "Scenario",
-      "description": "The recommendation scenario to be used (e.g., 'homepage', 'related-items').",
+      "description": "The recommendation scenario to be used (e.g., 'emailing', 'related-items'). Shall be set up in the Recombee Admin UI.",
       "propertyOrder": 4
     },
     "endpoint": {
@@ -45,18 +45,19 @@
       "title": "Recommendation Endpoint",
       "enum": [
         "Recommend Items to User",
-        "Recommend Items to Item",
-        "Recommend Item Segments to User"
+        "Recommend Item Segments to User",
+        "Recommend Items to Item"
       ],
-      "description": "Which Recombee endpoint to use when fetching recommendations.",
+      "description": "Which Recombee endpoint to use when fetching recommendations. Needs to correspond to the used scenario.",
       "propertyOrder": 5
     },
     "count": {
       "type": "integer",
       "title": "Number of Recommendations",
       "description": "How many recommended items to fetch per user or item.",
+      "default": 5,
       "minimum": 1,
-      "maximum": 1000,
+      "maximum": 30,
       "propertyOrder": 6
     },
     "batch_size": {

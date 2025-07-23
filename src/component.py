@@ -1,3 +1,4 @@
+import os
 import sys
 import logging
 
@@ -57,7 +58,14 @@ class Component(ComponentBase):
                 raise UserException(f"No input logic for endpoint: '{config.endpoint}'")
 
             # Load matching input table
-            table_def = next((t for t in input_tables if t.name == input_name), None)
+            table_def = next(
+                (
+                    t
+                    for t in input_tables
+                    if os.path.basename(t.full_path).lower() == input_name
+                ),
+                None,
+            )
             if not table_def:
                 raise UserException(
                     f"Missing required input file '{input_name}' for endpoint '{config.endpoint}'"
