@@ -2,6 +2,16 @@
 	"parameters":{
 		"database_id": "<your-db-id>",
 		"#private_token": "<db-private-token>",
-      	"region": "us-west"
+		"region": "us-west",
+		"scenario": "personalized-emailing",
+		"endpoint": "Recommend Items to User",
+		"included_properties": [
+			"title",
+			"url",
+			"image_url",
+			"description",
+			"price"
+		],
+		"count": 5
 	}
 }
