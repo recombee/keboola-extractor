@@ -37,6 +37,7 @@ class BaseRecommendationsRequester(ABC):
         ids: List[str],
         scenario: str,
         count: int,
+        included_properties: List[str],
         batch_size: int,
         writer: OutputTableWriter,
     ):
@@ -44,6 +45,7 @@ class BaseRecommendationsRequester(ABC):
         self.ids = ids
         self.scenario = scenario
         self.count = count
+        self.included_properties = included_properties
         self.batch_size = batch_size
         self.writer = writer
 
@@ -104,6 +106,9 @@ class BaseRecommendationsRequester(ABC):
         else:
             logging.info(msg)
 
+    def return_properties(self):
+        return self.included_properties is not None
+
     @abstractmethod
     def make_request(self, id_: str) -> Request: ...
 
@@ -111,19 +116,30 @@ class BaseRecommendationsRequester(ABC):
 class RecommendItemsToUserRequester(BaseRecommendationsRequester):
     def make_request(self, id_: str) -> Request:
         return RecommendItemsToUser(
-            user_id=id_, scenario=self.scenario, count=self.count
+            user_id=id_,
+            scenario=self.scenario,
+            count=self.count,
+            return_properties=self.return_properties(),
+            included_properties=self.included_properties,
+            cascade_create=True,
         )
 
 
 class RecommendItemsToItemRequester(BaseRecommendationsRequester):
     def make_request(self, id_: str) -> Request:
         return RecommendItemsToItem(
-            item_id=id_, target_user_id="null", scenario=self.scenario, count=self.count
+            item_id=id_,
+            target_user_id="null",
+            scenario=self.scenario,
+            count=self.count,
+            return_properties=self.return_properties(),
+            included_properties=self.included_properties,
+            cascade_create=True,
         )
 
 
 class RecommendItemSegmentsToUserRequester(BaseRecommendationsRequester):
     def make_request(self, id_: str) -> Request:
         return RecommendItemSegmentsToUser(
-            user_id=id_, scenario=self.scenario, count=self.count
+            user_id=id_, scenario=self.scenario, count=self.count, cascade_create=True
         )

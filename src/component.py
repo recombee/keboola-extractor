@@ -84,6 +84,7 @@ class Component(ComponentBase):
                 ids=ids,
                 scenario=config.scenario,
                 count=config.count,
+                included_properties=config.included_properties,
                 batch_size=config.batch_size,
                 writer=writer,
             )

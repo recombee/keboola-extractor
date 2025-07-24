@@ -1,4 +1,5 @@
 import json
+from typing import List
 
 
 class Config:
@@ -50,6 +51,10 @@ class Config:
     @property
     def count(self) -> int:
         return int(self._params.get("count", 100))
+
+    @property
+    def included_properties(self) -> List[str]:
+        return self._params.get("included_properties")
 
     @property
     def batch_size(self) -> int:

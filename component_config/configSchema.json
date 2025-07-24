@@ -60,6 +60,15 @@
       "maximum": 30,
       "propertyOrder": 6
     },
+    "included_properties": {
+      "type": "array",
+      "title": "Included Properties",
+      "description": "Optional. List of item properties to be included in the API response for each recommended item.",
+      "items": {
+        "type": "string"
+      },
+      "propertyOrder": 7
+    },
     "batch_size": {
       "type": "integer",
       "title": "Batch Size",
@@ -67,7 +76,7 @@
       "maximum": 10000,
       "minimum": 10,
       "description": "Number of users or items to fetch recommendations for in a single batch.",
-      "propertyOrder": 7
+      "propertyOrder": 8
     }
   }
 }
