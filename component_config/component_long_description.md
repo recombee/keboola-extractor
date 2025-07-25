@@ -1,6 +1,6 @@
-# Recombee Extractor for Keboola
+# Recombee Data Source
 
-The Recombee Extractor fetches recommendations from [Recombee](https://www.recombee.com/) via selected recommendation endpoint and exports the results as structured CSV tables.
+The Recombee Data Source fetches recommendations from [Recombee](https://www.recombee.com/) using a selected recommendation endpoint and exports the results as a structured CSV table.
 
 ---
 
@@ -35,7 +35,7 @@ user_1d8a9e
 
 ---
 
-## Output Format
+## Output Structure
 
 The recommendations are exported to:
 `out/tables/recomms.csv`

@@ -1,6 +1,6 @@
 # Recombee Extractor for Keboola
 
-A Keboola Extractor component that fetches recommendations from [Recombee](https://www.recombee.com/) using selected recommendation endpoints and exports them as structured CSV files.
+A Keboola Extractor component that fetches recommendations from [Recombee](https://www.recombee.com/) using a selected recommendation endpoint and exports the results as a structured CSV table.
 
 ---
 
